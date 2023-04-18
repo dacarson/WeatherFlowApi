@@ -1,0 +1,14 @@
+WeatherFlowStrings   KEYWORD1
+description_P    KEYWORD2
+unit_P KEYWORD2
+WeatherFlowData   KEYWORD1
+processPacket    KEYWORD2
+getValue KEYWORD2
+hasObject KEYWORD2
+lastObject KEYWORD2
+registerCallback KEYWORD2
+currentCallbackObject KEYWORD2
+WeatherFlowUdp   KEYWORD1
+begin    KEYWORD2
+update KEYWORD2
+
