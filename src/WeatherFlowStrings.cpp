@@ -195,7 +195,7 @@ static const __FlashStringHelper *precipitation_P(WeatherFlowData::Precipitation
 			return F("Rain");
 		case WeatherFlowData::Precipitation_Hail:
 			return F("Hail");
-		case WeatherFlowData::Precipitation_Rain+Hail:
+		case WeatherFlowData::Precipitation_Rain_Hail:
 			return F("Rain and Hail");
 		default:
 			return F("None");
