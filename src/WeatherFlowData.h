@@ -105,7 +105,7 @@ class WeatherFlowData {
 		Precipitation_None = 0,
 		Precipitation_Rain = 1,
 		Precipitation_Hail = 2,
-		Precipitation_Rain+Hail = 3
+		Precipitation_Rain_Hail = 3
 	}
 	
 	// Convenience method to use within a callback.
