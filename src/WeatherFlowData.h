@@ -106,7 +106,7 @@ class WeatherFlowData {
 		Precipitation_Rain = 1,
 		Precipitation_Hail = 2,
 		Precipitation_Rain_Hail = 3
-	}
+	};
 	
 	// Convenience method to use within a callback.
 	JsonVariantConst getValue(Key val);
