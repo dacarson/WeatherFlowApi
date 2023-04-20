@@ -38,22 +38,13 @@ void WeatherFlowUdp::update() {
 	// Process all waiting packets
 	int packetSize = 0;
 	while(packetSize = weatherUDP.parsePacket()) {
-		char* buffer = (char*)malloc(packetSize+1);
-		int bufferLen = weatherUDP.read(buffer, packetSize);
-		
-		// Null terminate the buffer, just in case.
-		buffer[bufferLen] = 0;
-		bufferLen++;
-#ifdef DEBUG
-		Serial.println(F("Received WeatherFlow packet"));
-		Serial.println(buffer);
-#endif
-		// Free the buffer if it wasn't handled.
-		if (processPacket(buffer) != 0) {
-		Serial.println(F("Packet not handled"));
-				Serial.println(buffer);
-			free(buffer);
-			}
+		DynamicJsonDocument tempDoc(600);
+		DeserializationError err = deserializeJson(tempDoc, weatherUDP);
+		if (err) {
+			Serial.print(F("deserializeJson() failed of UDP packet: "));
+			Serial.println(err.c_str());
+		}
+		processJsonDocument(tempDoc);
 	}
 }
 
