@@ -53,63 +53,72 @@ WeatherFlowData::WeatherFlowData() :
 WeatherFlowData::~WeatherFlowData() {
 }
 
-// Takes ownership of the buffer on success (return 0)
-int WeatherFlowData::processPacket(char* buffer) {
+// Caller can free buffer on return as the data is copied
+int WeatherFlowData::processPacket(const char* buffer) {
 	// What sort of object is it
-	DynamicJsonDocument tempDoc(400);
+	DynamicJsonDocument tempDoc(600);
+	int bufferlen = strlen(buffer);
 	DeserializationError err = deserializeJson(tempDoc, buffer);
 	
 	if (err) {
-//#ifdef DEBUG
 		Serial.print(F("deserializeJson() failed: "));
 		Serial.println(err.c_str());
-//#endif
+		// Because deserialization may have altered the data,
+		// print each character.
+		Serial.println(F("Buffer: "));
+		for (int i = 0; i < bufferlen; i++)
+			Serial.print(buffer[i]);
+		Serial.println("");
 		return -1;
 	}
+	return processJsonDocument(tempDoc);
+}
 	
+int WeatherFlowData::processJsonDocument(JsonDocument & doc) {
+
 #ifdef DEBUG
 	Serial.print(F("Processing object type: "));
-	Serial.println((const char*)tempDoc[TYPE]);
+	Serial.println((const char*)doc[TYPE]);
 #endif
 	
-	if (strcmp("evt_precip", tempDoc[TYPE]) == 0) {
-		// copy the document as it will be freed by processPacket
-		rainEventJsonDocument = tempDoc;
+	if (strcmp("evt_precip", doc[TYPE]) == 0) {
+		// copy the document so that the passed in doc can be freed
+		rainEventJsonDocument = doc;
 		rainEventJsonDocument.shrinkToFit();
 		currentCallback = RAIN;
 	}
-	else if (strcmp("evt_strike", tempDoc[TYPE]) == 0) {
-		strikeEventJsonDocument = tempDoc;
+	else if (strcmp("evt_strike", doc[TYPE]) == 0) {
+		strikeEventJsonDocument = doc;
 		strikeEventJsonDocument.shrinkToFit();
 		currentCallback = LIGHTNING;
 	}
-	else if (strcmp("rapid_wind", tempDoc[TYPE]) == 0) {
-		windEventJsonDocument = tempDoc;
+	else if (strcmp("rapid_wind", doc[TYPE]) == 0) {
+		windEventJsonDocument = doc;
 		windEventJsonDocument.shrinkToFit();
 		currentCallback = WIND;
 	}
-	else if (strcmp("obs_air", tempDoc[TYPE]) == 0) {
-		airEventJsonDocument = tempDoc;
+	else if (strcmp("obs_air", doc[TYPE]) == 0) {
+		airEventJsonDocument = doc;
 		airEventJsonDocument.shrinkToFit();
 		currentCallback = AIR;
 	}
-	else if (strcmp("obs_sky", tempDoc[TYPE]) == 0) {
-		skyEventJsonDocument = tempDoc;
+	else if (strcmp("obs_sky", doc[TYPE]) == 0) {
+		skyEventJsonDocument = doc;
 		skyEventJsonDocument.shrinkToFit();
 		currentCallback = SKY;
 	}
-	else if (strcmp("obs_st", tempDoc[TYPE]) == 0) {
-		tempestEventJsonDocument = tempDoc;
+	else if (strcmp("obs_st", doc[TYPE]) == 0) {
+		tempestEventJsonDocument = doc;
 		tempestEventJsonDocument.shrinkToFit();
 		currentCallback = TEMPEST;
 	}
-	else if (strcmp("device_status", tempDoc[TYPE]) == 0) {
-		statusEventJsonDocument = tempDoc;
+	else if (strcmp("device_status", doc[TYPE]) == 0) {
+		statusEventJsonDocument = doc;
 		statusEventJsonDocument.shrinkToFit();
 		currentCallback = STATUS;
 	}
-	else if (strcmp("hub_status", tempDoc[TYPE]) == 0) {
-		hubEventJsonDocument = tempDoc;
+	else if (strcmp("hub_status", doc[TYPE]) == 0) {
+		hubEventJsonDocument = doc;
 		hubEventJsonDocument.shrinkToFit();
 		currentCallback = HUB;
 	}
@@ -134,7 +143,7 @@ int WeatherFlowData::processPacket(char* buffer) {
 
 #ifdef DEBUG
 	Serial.print(F("unknown message type"));
-	Serial.println((const char*)tempDoc[TYPE]);
+	Serial.println((const char*)doc[TYPE]);
 #endif
 	return -1;
 }

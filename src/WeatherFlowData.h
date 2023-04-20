@@ -40,7 +40,7 @@ class WeatherFlowData {
     ~WeatherFlowData();
     
     /* Handle a new JSON formated Weatherflow object */
-    int processPacket(char *packet);
+    int processPacket(const char *packet);
     
     /* Known types of WeatherFlow objects */
 	enum Object {
@@ -101,6 +101,7 @@ class WeatherFlowData {
 		Last_Value
 	};
 	
+	/* possible precipitation types */
 	enum PrecipitationTypes {
 		Precipitation_None = 0,
 		Precipitation_Rain = 1,
@@ -108,10 +109,11 @@ class WeatherFlowData {
 		Precipitation_Rain_Hail = 3
 	};
 	
-	// Convenience method to use within a callback.
+	// Convenience method to use within a callback to get a
+	// specified value for key
 	JsonVariantConst getValue(Key val);
 	
-	// get a specific value from a specific object
+	// get a specific value for key from a specific object
 	JsonVariantConst getValue(Object obj, Key val);
 	
 	// Return true if this type of object has ever been processed
@@ -126,6 +128,9 @@ class WeatherFlowData {
 	// context value provided during registration.
 	typedef std::function<void(Object obj, void* context)> ENotifierFunction;
 	void registerCallback(ENotifierFunction callback, void* context = 0);
+	
+  protected:
+	int processJsonDocument(JsonDocument& doc);
 	
   private:
 	// Local copies of the last objects
