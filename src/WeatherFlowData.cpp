@@ -56,7 +56,7 @@ WeatherFlowData::~WeatherFlowData() {
 // Caller can free buffer on return as the data is copied
 int WeatherFlowData::processPacket(const char* buffer) {
 	// What sort of object is it
-	DynamicJsonDocument tempDoc(600);
+	JsonDocument tempDoc;
 	int bufferlen = strlen(buffer);
 	DeserializationError err = deserializeJson(tempDoc, buffer);
 	
@@ -403,7 +403,7 @@ bool WeatherFlowData::hasObject(WeatherFlowData::Object obj) {
   return false;
 }
 
-DynamicJsonDocument WeatherFlowData::lastObject(WeatherFlowData::Object obj) {
+JsonDocument WeatherFlowData::lastObject(WeatherFlowData::Object obj) {
 	switch (obj) {
 		case RAIN:
 			return rainEventJsonDocument;
@@ -422,7 +422,7 @@ DynamicJsonDocument WeatherFlowData::lastObject(WeatherFlowData::Object obj) {
 		case HUB:
 			return hubEventJsonDocument;
 	}
-  return DynamicJsonDocument(0);
+  return JsonDocument();
 }
 
 void WeatherFlowData::registerCallback(WeatherFlowData::ENotifierFunction callback, void* context) {

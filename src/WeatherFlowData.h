@@ -120,7 +120,7 @@ class WeatherFlowData {
 	bool hasObject(Object obj);
 	
 	// Return a COPY of the last processed object of given type
-	DynamicJsonDocument lastObject(Object obj);
+	JsonDocument lastObject(Object obj);
 	
 	// Callback function prototype is of the form:
 	//    void callback(void* context)
@@ -134,14 +134,14 @@ class WeatherFlowData {
 	
   private:
 	// Local copies of the last objects
-	DynamicJsonDocument rainEventJsonDocument;
-	DynamicJsonDocument strikeEventJsonDocument;
-	DynamicJsonDocument windEventJsonDocument;
-	DynamicJsonDocument skyEventJsonDocument;
-	DynamicJsonDocument airEventJsonDocument;
-	DynamicJsonDocument tempestEventJsonDocument;
-	DynamicJsonDocument statusEventJsonDocument;
-	DynamicJsonDocument hubEventJsonDocument;
+	JsonDocument rainEventJsonDocument;
+	JsonDocument strikeEventJsonDocument;
+	JsonDocument windEventJsonDocument;
+	JsonDocument skyEventJsonDocument;
+	JsonDocument airEventJsonDocument;
+	JsonDocument tempestEventJsonDocument;
+	JsonDocument statusEventJsonDocument;
+	JsonDocument hubEventJsonDocument;
 
 	ENotifierFunction eventCallback;
 	void* callbackContext;

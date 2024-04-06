@@ -38,7 +38,7 @@ void WeatherFlowUdp::update() {
 	// Process all waiting packets
 	int packetSize = 0;
 	while(packetSize = weatherUDP.parsePacket()) {
-		DynamicJsonDocument tempDoc(600);
+		JsonDocument tempDoc;
 		DeserializationError err = deserializeJson(tempDoc, weatherUDP);
 		if (err) {
 			Serial.print(F("deserializeJson() failed of UDP packet: "));
